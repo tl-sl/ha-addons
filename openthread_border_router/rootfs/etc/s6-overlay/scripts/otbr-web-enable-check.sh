@@ -2,6 +2,7 @@
 # ==============================================================================
 # Disable OTBR Web if necessary ports are not exposed
 # ==============================================================================
+/etc/s6-overlay/scripts/socat-cpcd-tcp-enable-check.sh
 
 if bashio::var.has_value "$(bashio::addon.port 8080)" \
      && bashio::var.has_value "$(bashio::addon.port 8081)"; then
