@@ -13,7 +13,7 @@ arch:
   - i386
 gpio: true
 hassio_api: true
-image: homeassistant/{arch}-addon-silabs-flasher
+image: smlighttech/{arch}-addon-silabs-flasher
 init: false
 options:
   device: null

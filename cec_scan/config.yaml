@@ -11,7 +11,7 @@ arch:
   - i386
 boot: manual
 description: Scan for HDMI CEC devices
-image: homeassistant/{arch}-addon-cec_scan
+image: smlighttech/{arch}-addon-cec_scan
 options: {}
 schema: {}
 startup: once
