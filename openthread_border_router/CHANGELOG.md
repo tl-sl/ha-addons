@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.5.92
+## 2.5.1
 - Add support for network sockets using socat
 
 ## 2.5.0
