@@ -68,16 +68,23 @@ def is_valid_otbr_settings_file(settings: list[tuple[OtbrSettingsKey, bytes]]) -
     return {OtbrSettingsKey.ACTIVE_DATASET} <= {key for key, _ in settings}
 
 
-async def get_adapter_hardware_addr(port: str, baudrate: int = 460800) -> str:
+async def get_adapter_hardware_addr(
+    port: str, baudrate: int = 460800, deassert: bool = False
+) -> str:
     loop = asyncio.get_running_loop()
 
     async with asyncio.timeout(CONNECT_TIMEOUT):
-        _, protocol = await zigpy.serial.create_serial_connection(
+        transport, protocol = await zigpy.serial.create_serial_connection(
             loop=loop,
             protocol_factory=SpinelProtocol,
             url=port,
             baudrate=baudrate,
         )
+
+        if deassert and hasattr(transport, "serial"):
+            transport.serial.rts = False
+            transport.serial.dtr = False
+
         await protocol.wait_until_connected()
 
     try:
@@ -119,11 +126,14 @@ async def main() -> None:
     parser.add_argument(
         "--baudrate", type=int, default=460800, help="Baudrate of the new adapter"
     )
+    parser.add_argument(
+        "--deassert", action="store_true", help="Deassert RTS/DTR lines"
+    )
 
     args = parser.parse_args()
 
     # First, read the hardware address of the new adapter
-    hwaddr = await get_adapter_hardware_addr(args.adapter, args.baudrate)
+    hwaddr = await get_adapter_hardware_addr(args.adapter, args.baudrate, args.deassert)
 
     # Then, look at existing settings
     all_settings = []
